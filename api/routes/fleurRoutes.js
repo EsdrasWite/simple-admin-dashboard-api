@@ -1,10 +1,10 @@
 import express from 'express';
-import db from '../configs/database';
+import db from '../configs/database.js';
 const router = express.Router();
 
 router.post('/', (req, res) => {
 
-    const values = [req.body.type]
+    const values = [req.body.type, req.body.userid]
 
     const q = "INSERT INTO `fleur`(`type`, `user_iduser`) VALUES (?)";
 
@@ -17,7 +17,6 @@ router.post('/', (req, res) => {
             data: data
         })
     })
-
 
 });
 

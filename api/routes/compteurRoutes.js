@@ -13,11 +13,11 @@ router.post('/', (req, res) => {
         req.body.groundhumidity,
         req.body.airtemperature,
         req.body.citernlevel,
-        req.body.fleur_idfleur,
+        req.body.fleurid,
     ];
 
     db.query(q, values, (error, data) => {
-        
+
         if (error) return res.status(500).json(error);
 
         res.status(200).json({
