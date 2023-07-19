@@ -8,6 +8,10 @@ const db = mysql.createConnection({
     user:"root",
     password:"",
     database:"malkiadashbord"
+});
+
+app.get("/", (req, res)=>{
+    res.json('Welcome to malkia_server dashbord')
 })
 
 const PORT = 8800;
