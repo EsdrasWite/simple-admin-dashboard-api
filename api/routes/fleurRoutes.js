@@ -34,7 +34,6 @@ router.get('/', (req, res) => {
             data: data
         })
     })
-
 })
 
 export default router;
