@@ -5,9 +5,13 @@ import compteurRoutes from './api/routes/compteurRoutes.js';
 
 const app = express();
 
+app.use(express.json());
+
 app.use('/user', userRoutes);
 app.use('/fleur', fleurRoutes);
 app.use('/compteur', compteurRoutes);
+
+
 
 app.get("/", (req, res)=>{
     res.json('Welcome to malkia_server dashbord')
