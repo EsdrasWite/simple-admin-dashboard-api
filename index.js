@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 let PORT;
+console.log(PORT);
 process.env.STATUS === 'production'
     ? (PORT = process.env.DEV_PORT)
     : (PORT = process.env.PROD_PORT);

@@ -7,7 +7,7 @@ router.post('/signup', (req, res) => {
 
     const { username, password } = req.body;
 
-    const q = "INSERT INTO user(`username`, `password`) VALUES (?)";
+    const q = "INSERT INTO user(`username`, `password`) VALUES (?,?)";
 
     db.query(q, [username, password], (error, data) => {
         if (error) {
@@ -28,9 +28,7 @@ router.post('/signin', (req, res) => {
 
     const { username, password } = req.body;
 
-    // const q = `SELECT * FROM user WHERE username = ${username}`;
     const q = `SELECT * FROM user WHERE username = '${username}'`;
-    // const q = `SELECT * FROM user`;
 
     db.query(q, (error, data) => {
 
