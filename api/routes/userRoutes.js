@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 
         if (error) return res.status(500).json(error);
 
-        if (data.length > 0) {       
+        if (data.length > 0) {
             res.status(200).json({
                 message: 'sucess',
                 data
@@ -24,16 +24,16 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/:id', (req, res)=>{
+router.get('/:id', (req, res) => {
     const userId = req.params.id;
 
     const q = "SELECT * FROM user WHERE `iduser` = ?";
 
-    db.query(q, [userId], (error, data)=>{
-        if(error) return res.status(500).json(error)
+    db.query(q, [userId], (error, data) => {
+        if (error) return res.status(500).json(error)
 
         res.status(200).json({
-            message:'success',
+            message: 'success',
             data
         })
     })
@@ -83,4 +83,45 @@ router.post('/signin', (req, res) => {
     })
 })
 
+router.post('/forgetpswd', (req, res) => {
+
+    const { username } = req.body;
+
+    const q1 = "SELECT `userid` FROM `user` WHERE `username` = ?"
+
+    db.query(q1, [username], (error, data) => {
+
+        if (error) return res.status(500).json(error);
+
+        if (data.length > 0) {        
+           return res.status(200).json({
+                message: `Un lien  ete envoyé à votre mail ${username}`
+            })
+        } else {
+            return res.status(400).json({
+                message: 'Utilisateur non existant'
+            })
+        }
+    })
+})
+
+router.put('/updatepswd/:id', (req, res) => {
+
+    const { password } = req.body;
+
+    const { id } = req.params;
+
+    const q1 = `UPDATE user SET password = '${password}' WHERE iduser='${id}'`
+
+    db.query(q1, [password, id], (error, data) => {
+
+        if (error) return res.status(500).json(error);
+
+        res.status(200).json({
+            message: "mot de pass modifié avec succes",
+            data
+        })
+      
+    })
+})
 export default router;
