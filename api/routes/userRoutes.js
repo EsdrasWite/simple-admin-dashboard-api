@@ -24,6 +24,21 @@ router.get('/', (req, res) => {
     })
 })
 
+router.get('/:id', (req, res)=>{
+    const userId = req.params.id;
+
+    const q = "SELECT * FROM user WHERE `iduser` = ?";
+
+    db.query(q, [userId], (error, data)=>{
+        if(error) return res.status(500).json(error)
+
+        res.status(200).json({
+            message:'success',
+            data
+        })
+    })
+})
+
 router.post('/signup', (req, res) => {
 
     const { username, password } = req.body;
