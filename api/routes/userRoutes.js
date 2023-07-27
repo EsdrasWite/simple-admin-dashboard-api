@@ -87,7 +87,7 @@ router.post('/forgetpswd', (req, res) => {
 
     const { username } = req.body;
 
-    const q1 = "SELECT `userid` FROM `user` WHERE `username` = ?"
+    const q1 = "SELECT `iduser` FROM `user` WHERE `username` = ?"
 
     db.query(q1, [username], (error, data) => {
 
@@ -95,7 +95,7 @@ router.post('/forgetpswd', (req, res) => {
 
         if (data.length > 0) {        
            return res.status(200).json({
-                message: `Un lien  ete envoyé à votre mail ${username}`
+                message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`
             })
         } else {
             return res.status(400).json({
