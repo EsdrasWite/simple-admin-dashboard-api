@@ -2,7 +2,7 @@ import express from 'express';
 import db from '../configs/database.js';
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/add', (req, res) => {
 
     const values = [req.body.type, req.body.userid]
 
