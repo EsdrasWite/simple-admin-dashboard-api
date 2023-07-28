@@ -134,21 +134,39 @@ router.post('/forget-password', (req, res) => {
 
 router.post('/reset-password/:id/:token', (req, res) => {
 
+    const { id, token } = req.params;
+
     const { password } = req.body;
 
-    const { id } = req.params;
+    const q1 = `SELECT * FROM 'user' WHERE 'iduser'='${id}'`
 
-    const q1 = `UPDATE user SET password = '${password}' WHERE iduser='${id}'`
+    const q2 = `UPDATE user SET password = '${password}' WHERE iduser='${id}'`
 
-    db.query(q1, [password, id], (error, data) => {
+    db.query(q1, (error, data) => {
 
         if (error) return res.status(500).json(error);
 
-        res.status(200).json({
-            message: "mot de pass modifié avec succes",
-            data
-        })
+        if (data.length > 0) {
+            //verification of the token
+            const secret = process.env.SECRET_KEY + data.password;
 
+            const payload = jwt.verify(token, secret)
+
+            if (payload) {
+                db.query(q2, (error, data) => {
+                    if (error) return console.log(error.message);
+                    res.status(200).json({
+                        message: "mot de pass modifié avec succes",
+                        data
+                    })
+                })
+            }
+            else {
+                res.status(402).json({
+                    message: "EChec de verification",
+                })
+            }
+        }
     })
 })
 export default router;
