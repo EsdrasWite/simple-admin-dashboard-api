@@ -83,7 +83,7 @@ router.post('/signin', (req, res) => {
     })
 })
 
-router.post('/forgetpswd', (req, res) => {
+router.post('/forget-password', (req, res) => {
 
     const { username } = req.body;
 
@@ -105,7 +105,7 @@ router.post('/forgetpswd', (req, res) => {
     })
 })
 
-router.put('/updatepswd/:id', (req, res) => {
+router.post('/reset-password/:id/:token', (req, res) => {
 
     const { password } = req.body;
 
