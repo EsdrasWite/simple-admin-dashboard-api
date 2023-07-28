@@ -94,6 +94,8 @@ router.post('/forget-password', (req, res) => {
         if (error) return res.status(500).json(error);
 
         if (data.length > 0) {        
+const secret = "";
+        const token = ""
            return res.status(200).json({
                 message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`
             })
