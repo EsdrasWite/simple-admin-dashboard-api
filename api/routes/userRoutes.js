@@ -102,22 +102,23 @@ router.post('/forget-password', (req, res) => {
                 username: data.username
             };
 
-            const token = sign(payload, secret, {
+            const token = jwt.sign(payload, secret, {
                 expireIn: '10m'
             });
 
             const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`
             const mailOptions = {
                 from: 'Malkiah ): <malkia-no-reply@gmail.com>',
-                to: '',
+                to: username,
                 subject: 'Reset password',
-                html: `Cliquer sur ce lien pour reinitialiser le mot de passe <br/>${link}`
+                html: `<h2>Cliquer sur ce lien pour reinitialiser le mot de passe </h2><br/>${link}`
             };
 
             transporter.senMail(mailOptions, (err, info) => {
                 if (err) {
                     console.log(err)
                 } else {
+                    console.log(info.response)
                     return res.status(200).json({
                         message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`
                     })
