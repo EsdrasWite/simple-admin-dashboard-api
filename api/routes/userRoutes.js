@@ -87,18 +87,43 @@ router.post('/forget-password', (req, res) => {
 
     const { username } = req.body;
 
-    const q1 = "SELECT `iduser` FROM `user` WHERE `username` = ?"
+    const q1 = "SELECT * FROM `user` WHERE `username` = ?"
 
     db.query(q1, [username], (error, data) => {
 
         if (error) return res.status(500).json(error);
 
-        if (data.length > 0) {        
-const secret = "";
-        const token = ""
-           return res.status(200).json({
-                message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`
+        if (data.length > 0) {
+            //create new token
+            const secret = process.env.SECRET_KEY + data.password;
+
+            const payload = {
+                userId: data.iduser,
+                username: data.username
+            };
+
+            const token = sign(payload, secret, {
+                expireIn: '10m'
+            });
+
+            const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`
+            const mailOptions = {
+                from: 'Malkiah ): <malkia-no-reply@gmail.com>',
+                to: '',
+                subject: 'Reset password',
+                html: `Cliquer sur ce lien pour reinitialiser le mot de passe <br/>${link}`
+            };
+
+            transporter.senMail(mailOptions, (err, info) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    return res.status(200).json({
+                        message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`
+                    })
+                }
             })
+
         } else {
             return res.status(400).json({
                 message: 'Utilisateur non existant'
@@ -123,7 +148,7 @@ router.post('/reset-password/:id/:token', (req, res) => {
             message: "mot de pass modifié avec succes",
             data
         })
-      
+
     })
 })
 export default router;
