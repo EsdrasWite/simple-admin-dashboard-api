@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../configs/database.js';
+
 const router = express.Router();
 
 router.post('/add', (req, res) => {
