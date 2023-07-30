@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../configs/database.js";
 import jwt from 'jsonwebtoken'
-
+import transporter from '../configs/services.js'
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -107,9 +107,10 @@ router.post('/forget-password', (req, res) => {
                 expireIn: '10m'
             });
 
-            const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`
+            const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`,\;
+
             const mailOptions = {
-                from: 'Malkiah ): <malkia-no-reply@gmail.com>',
+                from: 'Malkiah Application ): <malkia-no-reply@gmail.com>',
                 to: username,
                 subject: 'Reset password',
                 html: `<h2>Cliquer sur ce lien pour reinitialiser le mot de passe </h2><br/>${link}`
