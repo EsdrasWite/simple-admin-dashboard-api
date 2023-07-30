@@ -1,5 +1,5 @@
-import db from "../configs/database";
-import transporter from "../configs/services";;
+import db from "../configs/database.js";
+import transporter from "../configs/services.js";
 import jwt from "jsonwebtoken";
 
 function signup(req, res) {
@@ -104,7 +104,7 @@ function forget_password (req, res) {
                 expireIn: '10m'
             });
 
-            const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`,\;
+            const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`;
 
             const mailOptions = {
                 from: 'Malkiah Application ): <malkia-no-reply@gmail.com>',
