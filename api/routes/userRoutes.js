@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../configs/database.js";
+import jwt from 'jsonwebtoken'
 
 const router = express.Router();
 
@@ -169,7 +170,7 @@ router.post('/reset-password/:id/:token', (req, res) => {
             }
         }else{
             return res.json({
-                message:'Une erreur s\est produit, reessayer plus tard'
+                message:'Une erreur s\est produit, réessayer plus tard'
             })
         }
     })
