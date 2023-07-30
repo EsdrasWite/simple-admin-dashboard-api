@@ -167,6 +167,10 @@ router.post('/reset-password/:id/:token', (req, res) => {
                     message: "EChec de verification",
                 })
             }
+        }else{
+            return res.json({
+                message:'Une erreur s\est produit, reessayer plus tard'
+            })
         }
     })
 })
