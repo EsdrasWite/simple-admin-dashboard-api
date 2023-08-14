@@ -3,16 +3,17 @@ import express from 'express';
 import userRoutes from './api/routes/userRoutes.js';
 import fleurRoutes from './api/routes/fleurRoutes.js';
 import compteurRoutes from './api/routes/compteurRoutes.js';
-
+import infopotfleurRoutes from './api/routes/infoPotFleurRoutes.js';
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({extended:true}));
 
 app.use('/user', userRoutes);
 app.use('/fleur', fleurRoutes);
 app.use('/compteur', compteurRoutes);
+app.use('/infopotfleur', infopotfleurRoutes);
 
 
 app.get("/", (req, res) => {

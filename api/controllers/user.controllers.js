@@ -36,7 +36,7 @@ function signin (req, res) {
         if (data.length > 0) {
             if (!(data[0].password === password)) return res.json('Mot de passe incorrect');
             res.status(200).json({
-                message: 'sucess'
+                message: 'Vous etes connectez'
             })
         } else {
             return res.status(400).json({
@@ -85,7 +85,7 @@ function forget_password (req, res) {
 
     const { username } = req.body;
 
-    const q1 = "SELECT * FROM `user` WHERE `username` = ?"
+    const q1 = "SELECT * FROM `user` WHERE `username` = ?";
 
     db.query(q1, [username], (error, data) => {
 
@@ -101,25 +101,35 @@ function forget_password (req, res) {
             };
 
             const token = jwt.sign(payload, secret, {
-                expireIn: '10m'
+                expiresIn: '10m' 
             });
 
-            const link = `http://localhost:7700/reset-password/${payload.userId}/${token}`;
+            const link = `localhost:7000/user/reset-password/${payload.userId}/${token}`;
 
-            const mailOptions = {
-                from: 'Malkiah Application ): <malkia-no-reply@gmail.com>',
+
+            var mailOptions = {
+                from: 'Malkiah Application ): <joellematabishi@gmail.com>',
                 to: username,
-                subject: 'Reset password',
+                subject: 'Sending Email using Node.js',
+                text: 'That was easy!',
                 html: `<h2>Cliquer sur ce lien pour reinitialiser le mot de passe </h2><br/>${link}`
-            };
+              };
+              
+            // const mailOptions = {
+            //     from: 'Malkiah Application ): <joellematabishi@gmail.com>',
+            //     to: username,
+            //     subject: 'Reset password',
+            //     html: `<h2>Cliquer sur ce lien pour reinitialiser le mot de passe </h2><br/>${link}`
+            // };
 
-            transporter.senMail(mailOptions, (err, info) => {
+            transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
                     console.log(err)
                 } else {
                     console.log(info.response)
                     return res.status(200).json({
-                        message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`
+                        message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`,
+                        info:info
                     })
                 }
             })
@@ -173,6 +183,7 @@ function reset_password  (req, res) {
         }
     })
 }
+
 export default{
     get_all_users, get_user_by_id, signup, signin, forget_password, reset_password
 }
