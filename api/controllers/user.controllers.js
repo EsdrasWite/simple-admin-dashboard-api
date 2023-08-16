@@ -57,7 +57,7 @@ function signin(req, res) {
                 erreur:err 
             });
             if (!result) return res.json({ 
-                message: 'Mot de passe incorrect',
+                message: 'Votre mot de passe est incorrect',
             
             });
 
