@@ -1,48 +1,82 @@
 import db from "../configs/database.js";
 import transporter from "../configs/services.js";
 import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt'
 
 function signup(req, res) {
 
     const { username, password } = req.body;
 
-    const q = "INSERT INTO user(`username`, `password`) VALUES (?,?)";
+    const q1 = `SELECT * FROM user WHERE username='${username}'`;
 
-    db.query(q, [username, password], (error, data) => {
-        if (error) {
-            return res.status(500).json({
-                message: 'There is an internal error',
-                error: error
+    const q2 = "INSERT INTO user(`username`, `password`) VALUES (?,?)";
+
+    db.query(q1, (error, rows) => {
+
+        if (error) return res.status(500).json({ message: "Une erreur est survenue, réessayer" });
+
+        if (rows.length >= 1) return res.status(500).json({ message: "Cet utilsateur existe" });
+
+        bcrypt.hash(password, 10, (error, hash) => {
+            if (error) return res.status(500).json({ message: "Une erreur est survenue, réessayer1" });
+            const entriesData = [username, hash];
+
+            db.query(q2, entriesData, (err, data) => {
+
+                if (err) return res.status(500).json({ 
+                    message: "Une erreur est survenue, réessayer2",
+                    erreur:err
+            });
+
+                res.status(200).json({
+                    message: 'Inscription reussie',
+                    data: data
+                })
+
             })
-        } else {
-            res.status(200).json({
-                message: "user created",
-                data: data
-            })
-        }
+        })
     })
+
 }
 
-function signin (req, res) {
-
+function signin(req, res) {
+ 
     const { username, password } = req.body;
 
-    const q = `SELECT * FROM user WHERE username = '${username}'`;
+    let sqlQuery = `SELECT * FROM user WHERE username = '${username}'`;
 
-    db.query(q, (error, data) => {
+    db.query(sqlQuery, (error, data) => {
 
-        if (error) return res.status(500).json(error);
+        if (error) return res.status(500).json({ message: "Une erreur est survenue, réessayer" });
 
-        if (data.length > 0) {
-            if (!(data[0].password === password)) return res.json('Mot de passe incorrect');
+        if (data.length < 1) return res.status(401).json({ message: "Adresse email ou mot de passe incorrect, réessayer" });
+
+        bcrypt.compare(password, data[0].password, (err, result) => {
+            if (err) return res.json({
+                 message: 'Une erreur s\'est produite, réessayer plus tard',
+                erreur:err 
+            });
+            if (!result) return res.json({ 
+                message: 'Mot de passe incorrect',
+            
+            });
+
+            const payload = {
+                _idUser: data[0].id,
+                _nom: data[0].username,
+            };
+
+            const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+                expiresIn: '6h'
+            });
+
             res.status(200).json({
-                message: 'Vous etes connectez'
+                message: 'Authentification reussie',
+                username: data[0].username,
+                id: data[0].iduser,
+                token: token
             })
-        } else {
-            return res.status(400).json({
-                message: 'Utilisateur non existant'
-            })
-        }
+        })
     })
 }
 
@@ -81,7 +115,7 @@ function get_user_by_id(req, res) {
     })
 }
 
-function forget_password (req, res) {
+function forget_password(req, res) {
 
     const { username } = req.body;
 
@@ -101,7 +135,7 @@ function forget_password (req, res) {
             };
 
             const token = jwt.sign(payload, secret, {
-                expiresIn: '10m' 
+                expiresIn: '10m'
             });
 
             const link = `localhost:7000/user/reset-password/${payload.userId}/${token}`;
@@ -113,8 +147,8 @@ function forget_password (req, res) {
                 subject: 'Sending Email using Node.js',
                 text: 'That was easy!',
                 html: `<h2>Cliquer sur ce lien pour reinitialiser le mot de passe </h2><br/>${link}`
-              };
-              
+            };
+
             // const mailOptions = {
             //     from: 'Malkiah Application ): <joellematabishi@gmail.com>',
             //     to: username,
@@ -129,7 +163,7 @@ function forget_password (req, res) {
                     console.log(info.response)
                     return res.status(200).json({
                         message: `Un lien contenant le nouveau mot de passe a été envoyé à l\'adresse ${username}`,
-                        info:info
+                        info: info
                     })
                 }
             })
@@ -142,7 +176,7 @@ function forget_password (req, res) {
     })
 }
 
-function reset_password  (req, res) {
+function reset_password(req, res) {
 
     const { id, token } = req.params;
 
@@ -176,14 +210,14 @@ function reset_password  (req, res) {
                     message: "EChec de verification",
                 })
             }
-        }else{
+        } else {
             return res.json({
-                message:'Une erreur s\est produit, réessayer plus tard'
+                message: 'Une erreur s\est produit, réessayer plus tard'
             })
         }
     })
 }
 
-export default{
+export default {
     get_all_users, get_user_by_id, signup, signin, forget_password, reset_password
 }
