@@ -47,9 +47,9 @@ function signin(req, res) {
 
     db.query(sqlQuery, (error, data) => {
 
-        if (error) return res.status(500).json({ message: "Une erreur est survenue, réessayer" });
+        if (error) return res.status(500).json({error:error, message: "Une erreur est survenue, réessayer" });
 
-        if (data.length < 1) return res.status(401).json({ message: "Adresse email ou mot de passe incorrect, réessayer" });
+        if (data.length < 1) return res.status(401).json({ data, message: "Adresse email ou mot de passe incorrect, réessayer " });
 
         bcrypt.compare(password, data[0].password, (err, result) => {
             if (err) return res.json({
@@ -66,9 +66,7 @@ function signin(req, res) {
                 _nom: data[0].username,
             };
 
-            const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-                expiresIn: '6h'
-            });
+            const token = jwt.sign(payload, process.env.JWT_SECRET_KEY)
 
             res.status(200).json({
                 message: 'Authentification reussie',

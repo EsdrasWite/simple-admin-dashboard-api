@@ -2,19 +2,16 @@ import 'dotenv/config.js';
 import express from 'express';
 import cors from 'cors'
 import userRoutes from './api/routes/userRoutes.js';
-import fleurRoutes from './api/routes/fleurRoutes.js';
-import compteurRoutes from './api/routes/compteurRoutes.js';
-import infopotfleurRoutes from './api/routes/infoPotFleurRoutes.js';
+import infoSalleRoutes from './api/routes/infoSalleRoutes.js';
 
 const app = express();
 app.use(cors())
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+
 app.use('/user', userRoutes);
-app.use('/fleur', fleurRoutes);
-app.use('/compteur', compteurRoutes);
-app.use('/infopotfleur', infopotfleurRoutes);
+app.use('/infosalle', infoSalleRoutes);
 
 
 app.get("/", (req, res) => {
