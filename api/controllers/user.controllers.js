@@ -1,5 +1,4 @@
 import db from "../configs/database.js";
-import transporter from "../configs/services.js";
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
 

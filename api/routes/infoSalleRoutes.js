@@ -3,6 +3,6 @@ import salleController from '../controllers/infoSalle.controller.js';
 
 const router = express.Router();
 
-router.get('/', salleController.getSalleInfo ) 
+router.get('/getall', salleController.getSalleInfo) 
 
 export default router;
